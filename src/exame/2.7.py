@@ -24,7 +24,7 @@ def fff():
     print("2的38次方为：", i ** j)
 
 
-"""3. 以下逻辑运算的结果：
+"""ep3. 以下逻辑运算的结果：
 a）True and False
 b）False and True
 c）True or False
@@ -36,13 +36,13 @@ f）True and False or False"""
 def ddd():
     print("1：", True and False)
     print("2:", False and True)
-    print("3:", True or False)
+    print("ep3:", True or False)
     print("4:", False or True)
     print("4:", True or False and True)
     print("5:", True and False or False)
 
 
-# 4. 编写程序计算1+2+3+…+100的结果。
+# 4. 编写程序计算1+2+ep3+…+100的结果。
 def ccc():
     sum = 0
     for i in range(1, 101):
