@@ -1,4 +1,4 @@
-from src import compare
+from study import compare
 
 if __name__ =="__main__":
     print("hello world")
