@@ -51,6 +51,7 @@ def get_link(txt):
 
 
 def test():
+    # todo 2022/3/29 返回的数据有问题，是嵌套的元组，不需要嵌套，待修复
     mylinks = []
     _url = 'https://madouqu.cc'
     _res = get_source(_url)
