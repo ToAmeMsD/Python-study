@@ -66,6 +66,8 @@ def delIni():
 
 def dir_editor():
     os.mkdir('testdir')
+    # os.mkdir('hellp/hhh')#mkdir,rmkdir一次只能创建(删除)一层文件夹
+    os.makedirs('hellp/hhh')
     print(os.listdir('.'))
 
 

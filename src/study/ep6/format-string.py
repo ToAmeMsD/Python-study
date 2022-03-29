@@ -42,7 +42,7 @@ def zhuanyi():
     path = 'hello\npython'
     path2 = 'hello\tpython'
     path3 = r'hello\tpython\n'
-    print('path:%s,path.len:%d \npath2:%s,path2.len:%d \npath3:%s,path3.len:%d' % (
+    print('pa:%s,pa.len:%d \npath2:%s,path2.len:%d \npath3:%s,path3.len:%d' % (
         path, len(path), path2, len(path2), path3, len(path3)))
     path4 = 'hello\bpython'
     print(path4)
