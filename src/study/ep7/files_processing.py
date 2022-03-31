@@ -74,7 +74,7 @@ def dir_editor():
 if __name__ == '__main__':
     # file_test()
     # splist()
-    # getIni()
+    getIni()
     # setIni()
     # delIni()
-    dir_editor()
+    # dir_editor()
