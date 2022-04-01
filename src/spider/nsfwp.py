@@ -33,7 +33,7 @@ def check_cookie():
         if bool:  # 是否存在时间这个索引
             oldtime = int(cookies.get('time'))
             # **************json写入*****************
-            if newtime - oldtime > 5000:  # 12小时过期
+            if newtime - oldtime > 2000:  # 12小时过期
                 cookies = get_cookie()
                 times = {'time': str(newtime)}
                 cookies.update(times)  # 更新时间
