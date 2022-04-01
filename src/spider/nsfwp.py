@@ -10,7 +10,6 @@ import os
 import random
 import re
 import string
-import threading
 import time
 
 import aiohttp
@@ -34,7 +33,7 @@ def check_cookie():
         if bool:  # 是否存在时间这个索引
             oldtime = int(cookies.get('time'))
             # **************json写入*****************
-            if newtime - oldtime > 40000:  # 12小时过期
+            if newtime - oldtime > 5000:  # 12小时过期
                 cookies = get_cookie()
                 times = {'time': str(newtime)}
                 cookies.update(times)  # 更新时间
@@ -146,6 +145,10 @@ async def main(loop, url):
 
 def yibu_download(mylink):
     """异步下载启动管理"""
+    # *******多线程使用*****************
+    # new_loop = asyncio.new_event_loop()
+    # asyncio.set_event_loop(new_loop)
+    # ******************************
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(loop, mylink))
 
@@ -169,6 +172,31 @@ def get_source(url, _my_cookie):
     return requests.get(url, headers=headers, cookies=_my_cookie).text  # 带cookies获取画廊源码
 
 
+# ******************原多线程方案，但是有bug
+# if __name__ == '__main__':
+#     cookies = check_cookie()  # 获取cookies
+#     linktest = get_pic_link('http://nsfwp.buzz/6673.html', cookies)
+#     galleries = get_gallery(0, 5)  # 获取每一页的画廊
+#     print('galleries:', galleries)
+#     for links in galleries:  # 此时的links指这一页的所有画廊
+#         print('links:', links)
+#         thread_list = []  # 线程队列
+#         thread_num = len(links)  # 总线程数
+#         for link in links:  # 此时的link指单个画廊链接
+#             # 给每个mylink一个线程
+#             mylink = get_pic_link(link, cookies)  # 获取这个画廊中的所有图片链接
+#             # **************多线程下载，为每个画廊开启一个线程**************
+#             t = threading.Thread(target=yibu_download, args=(mylink,))  # 多线程调用异步下载
+#             thread_list.append(t)
+#             t.start()
+#             while len(thread_list) > thread_num:  # 移除已停止进程
+#                 thread_list = [x for x in thread_list if x.is_alive()]
+#                 time.sleep(3)
+#             print('Running Thread:' + str(thread_list))
+#             print('mylink', mylink)
+#             # file_download(mylink)  # 下载图片
+# todo 2022/3/31 麻了，网址墙了
+# fixme 2022/4/1 多线程还是有问题
 if __name__ == '__main__':
     cookies = check_cookie()  # 获取cookies
     linktest = get_pic_link('http://nsfwp.buzz/6673.html', cookies)
@@ -176,19 +204,8 @@ if __name__ == '__main__':
     print('galleries:', galleries)
     for links in galleries:  # 此时的links指这一页的所有画廊
         print('links:', links)
-        thread_list = []  # 线程队列
-        thread_num = len(links)  # 总线程数
         for link in links:  # 此时的link指单个画廊链接
-            # 给每个mylink一个线程
             mylink = get_pic_link(link, cookies)  # 获取这个画廊中的所有图片链接
-            # **************多线程下载，为每个画廊开启一个线程**************
-            t = threading.Thread(target=yibu_download, args=mylink)  # 多线程调用异步下载
-            thread_list.append(t)
-            t.start()
-            while len(thread_list) > thread_num:  # 移除已停止进程
-                thread_list = [x for x in thread_list if x.is_alive()]
-                time.sleep(3)
-            print('运行中的线程：' + str(thread_list))
+            # **************异步下载**************
+            yibu_download(mylink)  # 调用异步下载
             print('mylink', mylink)
-            # file_download(mylink)  # 下载图片
-# todo 2022/3/31 麻了，网址墙了
