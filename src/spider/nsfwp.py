@@ -4,13 +4,16 @@
 #GitHub:github.com/ToSeeAll
 """
 # 该网站第一次会要求输入1，记录cookie才能进行后续访问
+import asyncio
 import json
 import os
 import random
 import re
 import string
+import threading
 import time
 
+import aiohttp
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -21,6 +24,7 @@ from selenium.webdriver.common.by import By
 
 
 def check_cookie():
+    """检查cookies，当未到24小时时使用旧cookies"""
     newtime = int(time.time())
     # **************json读取************
     with open('cookies.json', 'r', encoding='UTF-8') as f:
@@ -30,7 +34,7 @@ def check_cookie():
         if bool:  # 是否存在时间这个索引
             oldtime = int(cookies.get('time'))
             # **************json写入*****************
-            if newtime - oldtime > 86272:  # 24小时过期
+            if newtime - oldtime > 40000:  # 12小时过期
                 cookies = get_cookie()
                 times = {'time': str(newtime)}
                 cookies.update(times)  # 更新时间
@@ -49,7 +53,6 @@ def check_cookie():
 
 def get_cookie():
     """获取访问cookie，有效期大概24h"""
-    # todo 2022/3/31 把cookies写入文件，以时间命名，获取当前时间，与cookies文件名比较，如果没超过24小时，则不获取cookies直接用
     _url = 'https://nsfwp.buzz/6653.html'
     browser = webdriver.Edge()
     browser.get(_url)
@@ -65,10 +68,11 @@ def get_cookie():
 
 def get_pic_link(url, cookie):
     """输入画廊链接提取链接,元组"""
-    # todo 2022/3/31 好像有两种显示方式，这是第一种
+    # 好像有两种显示方式，这是第一种
     txt = get_source(url, cookie)
     _links = re.findall(r'<figure class="wp-block-image"><img src="(.*?)" alt=""/></figure>', txt)
     if len(_links) == 0:
+        # 第二种
         _links = re.findall(r'<figure class="wp-block-image".*?<img src="(.*?)"', txt)
     return _links
 
@@ -93,7 +97,7 @@ def file_download(_links):
     else:
         os.makedirs(save_path)
     leng = len(_links)
-    length = int(leng / 10) + 2
+    length = int(len(str(leng))) + 1
     for i in range(1, leng):
         names.append(save_path + '/' + (str(i).rjust(length, '0')) + '.jpg')  # 保存的文件名
     print('下载开始咯')
@@ -107,6 +111,43 @@ def file_download(_links):
         print('好耶，下完了一个画廊')
     except Exception as e:
         print('出错了，错误原因：' + str(e))
+
+
+async def job(session, url, name):
+    """异步下载"""
+    img = await session.get(url)
+    imgcode = await img.read()
+    with open(str(name), 'wb') as f:
+        f.write(imgcode)
+    return str(url)
+
+
+async def main(loop, url):
+    """异步下载主函数"""
+    async with aiohttp.ClientSession() as session:
+        names = []
+        mytime = time.strftime('%Y-%m-%d-%H-%M', time.localtime())
+        ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))  # 引入随机字符，防止覆盖
+        save_path = mytime + '/' + ran_str
+        _dir = os.listdir('.')
+        if mytime in _dir:
+            os.makedirs(save_path)
+        else:
+            os.makedirs(save_path)
+        leng = len(url)
+        length = int(len(str(leng))) + 1
+        for i in range(0, leng):
+            names.append(save_path + '/' + (str(i).rjust(length, '0')) + '.jpg')  # 保存的文件名
+        tasks = [loop.create_task(job(session, url[_], names[_])) for _ in range(len(url))]
+        finshed, unfinshed = await asyncio.wait(tasks)
+        all_results = [r.result() for r in finshed]
+        print('All Result:' + str(all_results))
+
+
+def yibu_download(mylink):
+    """异步下载启动管理"""
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main(loop, mylink))
 
 
 def get_gallery(begin_page=0, stop_page=get_max_page('https://nsfwp.buzz/page/1')):
@@ -132,10 +173,22 @@ if __name__ == '__main__':
     cookies = check_cookie()  # 获取cookies
     linktest = get_pic_link('http://nsfwp.buzz/6673.html', cookies)
     galleries = get_gallery(0, 5)  # 获取每一页的画廊
-    print(galleries)
+    print('galleries:', galleries)
     for links in galleries:  # 此时的links指这一页的所有画廊
+        print('links:', links)
+        thread_list = []  # 线程队列
+        thread_num = len(links)  # 总线程数
         for link in links:  # 此时的link指单个画廊链接
+            # 给每个mylink一个线程
             mylink = get_pic_link(link, cookies)  # 获取这个画廊中的所有图片链接
-            print(mylink)
-            file_download(mylink)  # 下载图片
+            # **************多线程下载，为每个画廊开启一个线程**************
+            t = threading.Thread(target=yibu_download, args=mylink)  # 多线程调用异步下载
+            thread_list.append(t)
+            t.start()
+            while len(thread_list) > thread_num:  # 移除已停止进程
+                thread_list = [x for x in thread_list if x.is_alive()]
+                time.sleep(3)
+            print('运行中的线程：' + str(thread_list))
+            print('mylink', mylink)
+            # file_download(mylink)  # 下载图片
 # todo 2022/3/31 麻了，网址墙了
