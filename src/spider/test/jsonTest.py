@@ -20,5 +20,5 @@ time = {'time': '234'}
 cookie.update(time)
 print(cookie)
 json_data = json.dumps(cookie)
-with open('cookies.json', 'w', encoding='utf-8') as f:
+with open('../src/cookies.json', 'w', encoding='utf-8') as f:
     json.dump(json_data, f)

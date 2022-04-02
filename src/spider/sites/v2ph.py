@@ -19,9 +19,9 @@ import requests
 # <img class="card-img-top" src="https://cdn.v2ph.com/album/GMMSfQmc_hdRd9Vk.jpg" data-src="https://cdn.v2ph.com/album/GMMSfQmc_hdRd9Vk.jpg" alt="[IMISS爱蜜社] VOL.640 小狐狸Kathryn 蕾丝诱惑小蛮腰" style="opacity: 1;">
 # </a>
 # 画廊里<div class="album-photo my-2" style="padding-bottom: 150%;"><img src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="https://cdn.v2ph.com/photos/pXSzHOzVq06NXpOl.jpg" class="img-fluid album-photo d-block mx-auto" alt="[IMISS爱蜜社] VOL.638 小狐狸Kathryn 丝袜 美臀 0"></div>
-def get_gallery(page):
+def get_gallery(_page):
     """获取画廊链接"""
-    url = 'https://www.v2ph.com/country/south-korea?page=' + str(page)
+    url = 'https://www.v2ph.com/country/south-korea?page=' + str(_page)
     _res = requests.get(url).text
     _galleries = re.findall(r'<a class="media-cover" href="(.*?)">', _res, re.S)
     _galleries = ['https://www.v2ph.com' + x for x in _galleries]
@@ -80,7 +80,7 @@ async def main(loop, url):
         title = url['title']
         url = url['links']
         save_path = 'v2ph/south-korea/' + title
-        _dir = os.listdir('.')
+        _dir = os.listdir('..')
         if not os.path.exists(save_path):
             os.makedirs(save_path)
         else:

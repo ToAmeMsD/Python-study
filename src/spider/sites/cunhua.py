@@ -21,7 +21,7 @@ def get_source(url):
 if __name__ == '__main__':
     url = 'https://www.cunhua.sbs'
     res = get_source(url)
-    f = open('cunhua.html', 'w', encoding='utf-8')
+    f = open('../src/cunhua.html', 'w', encoding='utf-8')
     f.write(res)
     f.close()
     soup = BeautifulSoup(res, 'html.parser', exclude_encodings='utf-8')

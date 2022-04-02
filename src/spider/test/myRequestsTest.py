@@ -85,5 +85,5 @@ if __name__ == '__main__':
     # _links.date = get_date(res2)  # 发布时间
     # _links.link = get_link(res2)  # 磁链
     mylink = test()
-    write_file('links.txt', mylink)
+    write_file('../src/links.txt', mylink)
     print(mylink)

@@ -26,28 +26,28 @@ def check_cookie():
     """检查cookies，当未到24小时时使用旧cookies"""
     newtime = int(time.time())
     # **************json读取************
-    with open('cookies.json', 'r', encoding='UTF-8') as f:
-        cookies = json.load(f)  # json格式数据
-        cookies = json.loads(cookies)  # 字典格式数据
-        bool = cookies.get('time')
-        if bool:  # 是否存在时间这个索引
-            oldtime = int(cookies.get('time'))
+    with open('../src/cookies.json', 'r', encoding='UTF-8') as f:
+        _cookies = json.load(f)  # json格式数据
+        _cookies = json.loads(_cookies)  # 字典格式数据
+        _bool = _cookies.get('time')
+        if _bool:  # 是否存在时间这个索引
+            oldtime = int(_cookies.get('time'))
             # **************json写入*****************
             if newtime - oldtime > 2000:  # 12小时过期
-                cookies = get_cookie()
+                _cookies = get_cookie()
                 times = {'time': str(newtime)}
-                cookies.update(times)  # 更新时间
-                json_data = json.dumps(cookies)
-                with open('cookies.json', 'w', encoding='utf-8') as f:
-                    json.dump(json_data, f)
+                _cookies.update(times)  # 更新时间
+                json_data = json.dumps(_cookies)
+                with open('../src/cookies.json', 'w', encoding='utf-8') as j:
+                    json.dump(json_data, j)
         else:
-            cookies = get_cookie()
+            _cookies = get_cookie()
             times = {'time': str(newtime)}
-            cookies.update(times)  # 更新时间
-            json_data = json.dumps(cookies)
-            with open('cookies.json', 'w', encoding='utf-8') as f:
-                json.dump(json_data, f)
-        return cookies
+            _cookies.update(times)  # 更新时间
+            json_data = json.dumps(_cookies)
+            with open('../src/cookies.json', 'w', encoding='utf-8') as h:
+                json.dump(json_data, h)
+        return _cookies
 
 
 def get_cookie():
@@ -90,7 +90,7 @@ def file_download(_links):
     mytime = time.strftime('%Y-%m-%d-%H-%M', time.localtime())
     ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))  # 引入随机字符，防止覆盖
     save_path = mytime + '/' + ran_str
-    _dir = os.listdir('.')
+    _dir = os.listdir('..')
     if mytime in _dir:
         os.makedirs(save_path)
     else:
@@ -128,7 +128,7 @@ async def main(loop, url):
         mytime = time.strftime('%Y-%m-%d-%H-%M', time.localtime())
         ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))  # 引入随机字符，防止覆盖
         save_path = mytime + '/' + ran_str
-        _dir = os.listdir('.')
+        _dir = os.listdir('..')
         if mytime in _dir:
             os.makedirs(save_path)
         else:
@@ -138,19 +138,19 @@ async def main(loop, url):
         for i in range(0, leng):
             names.append(save_path + '/' + (str(i).rjust(length, '0')) + '.jpg')  # 保存的文件名
         tasks = [loop.create_task(job(session, url[_], names[_])) for _ in range(len(url))]
-        finshed, unfinshed = await asyncio.wait(tasks)
-        all_results = [r.result() for r in finshed]
+        finished, unfinished = await asyncio.wait(tasks)
+        all_results = [r.result() for r in finished]
         print('All Result:' + str(all_results))
 
 
-def yibu_download(mylink):
+def yibu_download(_mylink):
     """异步下载启动管理"""
     # *******多线程使用*****************
     # new_loop = asyncio.new_event_loop()
     # asyncio.set_event_loop(new_loop)
     # ******************************
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(loop, mylink))
+    loop.run_until_complete(main(loop, _mylink))
 
 
 def get_gallery(begin_page=0, stop_page=get_max_page('https://nsfwp.buzz/page/1')):
@@ -199,7 +199,7 @@ def get_source(url, _my_cookie):
 # fixme 2022/4/1 多线程还是有问题
 if __name__ == '__main__':
     cookies = check_cookie()  # 获取cookies
-    linktest = get_pic_link('http://nsfwp.buzz/6673.html', cookies)
+    linktest = get_pic_link('https://nsfwp.buzz/6673.html', cookies)
     galleries = get_gallery(0, 5)  # 获取每一页的画廊
     print('galleries:', galleries)
     for links in galleries:  # 此时的links指这一页的所有画廊

@@ -9,7 +9,7 @@ import time
 
 import requests
 
-from spider import FileDownload
+from spider.utils import FileDownload
 
 if __name__ == '__main__':
     # ********************************************

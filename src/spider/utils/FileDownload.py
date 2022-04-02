@@ -31,7 +31,7 @@ async def main(loop, url):
         mytime = time.strftime('%Y-%m-%d-%H-%M', time.localtime())
         ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))  # 引入随机字符，防止覆盖
         save_path = mytime + '/' + ran_str
-        _dir = os.listdir('.')
+        _dir = os.listdir('..')
         if mytime in _dir:
             os.makedirs(save_path)
         else:
@@ -53,7 +53,7 @@ async def main_with(loop, url, title):
         mytime = time.strftime('%Y-%m-%d-%H-%M', time.localtime())
         ran_str = title
         save_path = mytime + '/' + ran_str
-        _dir = os.listdir('.')
+        _dir = os.listdir('..')
         if mytime in _dir:
             os.makedirs(save_path)
         else:
