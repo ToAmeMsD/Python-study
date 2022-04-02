@@ -11,7 +11,7 @@ import requests
 def create_html(links):
     for src in links:
         html = '<img src="' + src + '">\n'
-        with open('img6.html', 'a+', encoding='utf-8') as f:
+        with open('../src/LALA/img6.html', 'a+', encoding='utf-8') as f:
             f.write(html)
 
 
