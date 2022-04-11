@@ -64,7 +64,7 @@ if __name__ == '__main__':
     # options = Options()
     # options.add_argument("headless")
     # driver = webdriver.Edge(options=options)
-    driver=webdriver.Edge()
+    driver=webdriver.Chrome()
     driver.get(url)
     driver.find_element(by=By.XPATH,value='//*[@id="login"]/div/form/div[3]/input').send_keys('3839126')
     driver.find_element(by=By.XPATH, value='//*[@id="login"]/div/form/div[4]/input').send_keys('qwer159357')

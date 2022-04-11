@@ -8,6 +8,7 @@ import re
 import requests
 
 
+# fixme 2022/4/3 不好用
 def getGalleries(url, rule, flag=None):
     """
     获取画廊链接\n
@@ -17,10 +18,10 @@ def getGalleries(url, rule, flag=None):
     :return galleries: 返回画廊链接元组
     """
     res = requests.get(url).text
-    if not flag:
-        galleries = re.findall(rule, res, re.S)
-    else:
+    if flag:
         galleries = re.findall(rule, res)
+    else:
+        galleries = re.findall(rule, res, re.S)
     return galleries
 
 
@@ -38,4 +39,3 @@ def getLinks(url, rule, flag=None):
     else:
         links = re.findall(rule, res)
     return links
-
