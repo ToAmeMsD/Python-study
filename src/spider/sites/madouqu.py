@@ -72,18 +72,6 @@ def write_file(path, info):
 
 
 if __name__ == '__main__':
-    # https://madouqu.cc/page/1/
-    # url = 'https://madouqu.cc'
-    # res = get_source(url)
-    # gallery = get_gallery(res)
-    # print(gallery)
-    #
-    # url = [gallery[i] for i in gallery.keys()]  # 画廊的url
-    # print(url)
-    # _links = LinkInfo()
-    # res2 = get_source(url[0])  # 进入画廊
-    # _links.date = get_date(res2)  # 发布时间
-    # _links.link = get_link(res2)  # 磁链
     mylink = test()
     write_file('../src/madouqu/links.txt', mylink)
     print(mylink)
