@@ -10,6 +10,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src/spider/src/meiJunTu" />
       <excludeFolder url="file://$MODULE_DIR$/src/spider/src/mrcong" />
       <excludeFolder url="file://$MODULE_DIR$/src/spider/src/yaomitao" />
+      <excludeFolder url="file://$MODULE_DIR$/src/spider/src/everia" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.9 (pythonProject1)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
